@@ -21,17 +21,13 @@ class HerzogCell:
             lines.pop()
         for line in lines:
             if CellType.python == self.cell_type:
-                if "pass" == line:
-                    pass
-                elif line.startswith(JUPYTER_SHELL_PFX) or line.startswith(JUPYTER_MAGIC_PFX):
+                if line.startswith(JUPYTER_SHELL_PFX) or line.startswith(JUPYTER_MAGIC_PFX):
                     self.lines.append(line[1:])
                 else:
                     self.lines.append(line)
             elif CellType.markdown == self.cell_type:
-                if line.startswith('#'):
-                    self.lines.append(line[1:].strip())
-                else:
-                    self.lines.append(line)
+                assert line.startswith('#')  # TODO: replace this with a top-level syntax/lint checker on the file
+                self.lines.append(line[1:].strip())
 
     @property
     def has_ipynb_representation(self):
