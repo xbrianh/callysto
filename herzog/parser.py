@@ -1,6 +1,6 @@
 import os
 from enum import Enum, auto
-from typing import Generator, Iterable, List, Optional, TextIO
+from typing import Generator, Iterable, List, Optional, TextIO, Dict, Any
 
 
 class CellType(Enum):
@@ -32,10 +32,10 @@ class HerzogCell:
                     self.lines.append(line)
 
     @property
-    def has_ipynb_representation(self):
+    def has_ipynb_representation(self) -> bool:
         return self.cell_type in self._translate
 
-    def to_ipynb_cell(self):
+    def to_ipynb_cell(self) -> Dict[str, Any]:
         jupyter_cell = dict(cell_type=self._translate[self.cell_type],
                             metadata=dict(),
                             source=os.linesep.join(self.lines))
@@ -102,7 +102,7 @@ def parse_cell_type(s: str) -> str:
     #
     # with herzog.Cell('python'):  # noqa
     #
-    return s.strip()[len("with herzog.Cell("):-len('):')].strip().strip('"').strip("'").strip()
+    return s.strip()[len("with herzog.Cell("):-len("):")].strip().strip('"').strip("'").strip()
 
 def parse_cells(raw_lines: TextIO) -> Generator[HerzogCell, None, None]:
     rlines = _RewindableIterator(raw_lines)
